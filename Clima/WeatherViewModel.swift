@@ -14,7 +14,7 @@ final class WeatherViewModel: ObservableObject {
 
     @MainActor
     func getWeather(city: String) async {
-        guard let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?appid=698cb29c0a1e70d1a30a0a9982f6a95a&units=metric&lang=es&q=\(city)") else { return }
+        guard let url = URL(string: "http://api.openweathermap.org/data/2.5/weather?appid=698cb29c0a1e70d1a30a0a9982f6a95a&units=metric&lang=es&q=\(city)") else { return }
         
         do {
             async let (data, _) = try await URLSession.shared.data(from: url)

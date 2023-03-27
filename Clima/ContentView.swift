@@ -28,7 +28,7 @@ struct ContentView: View {
                 }
                 .padding(.top, -20)
                 HStack(spacing: 15) {
-                    if let iconURL = weatherViewModel.weatherResponseDataModel?.weather.first?.icon, let url = URL(string: "https://openweathermap.org/img/wn/\(iconURL)@2x.png") {
+                    if let iconURL = weatherViewModel.weatherResponseDataModel?.weather.first?.icon, let url = URL(string: "http://openweathermap.org/img/wn/\(iconURL)@2x.png") {
                         AsyncImage(url: url) { image in
                             image
                         } placeholder: {
@@ -55,7 +55,7 @@ struct ContentView: View {
             .padding(.top, 32)
         }
         .background(
-            LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing)
+            LinearGradient(colors: [.blue, .green], startPoint: .topLeading, endPoint: .bottomTrailing)
         )
         .task {
             await weatherViewModel.getWeather(city: "Morelia")
