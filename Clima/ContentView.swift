@@ -70,6 +70,7 @@ struct ContentView: View {
         )
         
         .task {
+            //Obtener la ubicacion y pedir el clima con las coordenadas de la ciudad
             await weatherViewModel.getWeather(city: "Morelia")
         }
     }
@@ -77,6 +78,10 @@ struct ContentView: View {
     func fetchClima(nameCity: String) {
         Task {
             await weatherViewModel.getWeather(city: ciudadBuscar.trimmingCharacters(in: .whitespaces))
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.ciudadBuscar = ""
         }
     }
 }
