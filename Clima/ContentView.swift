@@ -10,55 +10,73 @@ import SwiftUI
 struct ContentView: View {
     
     @StateObject var weatherViewModel = WeatherViewModel()
-    
+    @State private var ciudadBuscar: String = ""
+
     var body: some View {
         ZStack {
             VStack(spacing: 20) {
-                Text(weatherViewModel.weatherResponseDataModel?.name ?? "No city")
-                    .foregroundColor(.white)
-                    .font(.system(size: 70))
-                Text(weatherViewModel.weatherResponseDataModel?.weather[0].description ?? "")
-                    .font(.title2)
-                    .foregroundColor(.white)
-                    .padding(.bottom, 8)
+                
+                TextField("Ciudad o pais", text: $ciudadBuscar)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .font(.title)
+                    .multilineTextAlignment(.center)
+                    .frame(height: 50)
+                    .padding([.leading, .trailing], 50)
+                    .onSubmit {
+                        fetchClima(nameCity: ciudadBuscar)
+                    }
+                
                 HStack {
-                    Text("\(weatherViewModel.weatherResponseDataModel?.main.temp ?? 0.0)°")
-                        .font(.system(size: 70))
-                        .foregroundColor(.white)
-                }
-                .padding(.top, -20)
-                HStack(spacing: 15) {
-                    if let iconURL = weatherViewModel.weatherResponseDataModel?.weather.first?.icon, let url = URL(string: "http://openweathermap.org/img/wn/\(iconURL)@2x.png") {
-                        AsyncImage(url: url) { image in
+                    
+                    if let iconURL = weatherViewModel.weatherModel?.iconURL {
+                        AsyncImage(url: iconURL) { image in
                             image
                         } placeholder: {
                             ProgressView()
                         }
-
                     }
-                    Label("\(weatherViewModel.weatherResponseDataModel?.main.tempMax ?? 0.0)°", systemImage: "thermometer.sun.fill")
-                        .font(.system(size: 30))
-                    Label("\(weatherViewModel.weatherResponseDataModel?.main.tempMin ?? 0.0)°", systemImage: "thermometer.snowflake")
-                        .font(.system(size: 30))
+                    
+                    Text(weatherViewModel.weatherModel?.currentTemperature ?? "0.0")
+                        .font(.system(size: 60))
+                        .foregroundColor(.white)
                 }
-                .symbolRenderingMode(.multicolor)
-                .foregroundColor(.white)
-                Divider()
+                
+                
+                Text(weatherViewModel.weatherModel?.city ?? "No city")
                     .foregroundColor(.white)
-                    .padding()
-                Label("\(weatherViewModel.weatherResponseDataModel?.main.humidity ?? 0)%", systemImage: "humidity.fill")
+                    .font(.system(size: 60))
+                
+               
+                Text(weatherViewModel.weatherModel?.description ?? "")
+                    .font(.title)
+                    .foregroundColor(.white)
+                    .padding(.bottom, 8)
+                
+                
+                    
+                Label("\(weatherViewModel.weatherModel?.humidity ?? "0") Humedad", systemImage: "humidity.fill")
+                    .font(.title)
                     .symbolRenderingMode(.multicolor)
                     .foregroundColor(.white)
+                
                 Spacer()
                 
             }
-            .padding(.top, 32)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
         }
         .background(
             LinearGradient(colors: [.blue, .green], startPoint: .topLeading, endPoint: .bottomTrailing)
         )
+        
         .task {
             await weatherViewModel.getWeather(city: "Morelia")
+        }
+    }
+    
+    func fetchClima(nameCity: String) {
+        Task {
+            await weatherViewModel.getWeather(city: ciudadBuscar.trimmingCharacters(in: .whitespaces))
         }
     }
 }

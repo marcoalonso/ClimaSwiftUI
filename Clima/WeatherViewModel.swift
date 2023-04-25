@@ -11,6 +11,9 @@ import Foundation
 
 final class WeatherViewModel: ObservableObject {
     @Published var weatherResponseDataModel: ResponseDataModel?
+    @Published var weatherModel: WeatherModel?
+    
+    let wrapper = WeatherModelMapper()
 
     @MainActor
     func getWeather(city: String) async {
@@ -19,7 +22,8 @@ final class WeatherViewModel: ObservableObject {
         do {
             async let (data, _) = try await URLSession.shared.data(from: url)
             let dataModel = try await JSONDecoder().decode(ResponseDataModel.self, from: data)
-            self.weatherResponseDataModel = dataModel
+//            self.weatherResponseDataModel = dataModel
+            self.weatherModel = wrapper.mapDataModelToModel(dataModel: dataModel)
         } catch {
             print("Debug: error \(error.localizedDescription)")
         }
