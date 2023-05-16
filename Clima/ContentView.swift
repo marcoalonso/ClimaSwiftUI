@@ -23,7 +23,7 @@ struct ContentView: View {
                     .frame(height: 50)
                     .padding([.leading, .trailing], 50)
                     .onSubmit {
-                        fetchClima(nameCity: ciudadBuscar)
+                        fetchClima()
                     }
                 
                 HStack {
@@ -75,9 +75,9 @@ struct ContentView: View {
         }
     }
     
-    func fetchClima(nameCity: String) {
+    func fetchClima() {
         Task {
-            await weatherViewModel.getWeather(city: ciudadBuscar.trimmingCharacters(in: .whitespaces))
+            await weatherViewModel.getWeather(city: ciudadBuscar )
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
